@@ -1,0 +1,27 @@
+id: python.queue-listener
+title: Python Queue Listener (pawn-queue)
+version: 1.0.0
+language: python
+tags:
+  - queue
+  - postgresql
+  - background-jobs
+applies_when:
+  - Writing a background job worker using the pawn-queue library
+  - Consuming jobs from a PostgreSQL-backed queue
+rules:
+  - "Use QueueListener(dsn, queue_name, handler) as the single entry point; never poll the DB manually."
+  - Pass a plain callable as handler; accept one dict argument (the job payload) and return nothing.
+  - "Call QueueListener.enqueue(dsn, queue_name, payload) to insert jobs; never write INSERT statements directly."
+  - Set lease_seconds high enough to cover the worst-case job duration before another worker can steal the job.
+  - Set max_retries to the number of transient-failure retries acceptable before marking a job 'failed'.
+  - Let the listener manage SIGINT/SIGTERM; do not install competing signal handlers in the same process.
+  - Handle only domain-specific exceptions inside the handler; let unexpected errors propagate so the listener can log and retry them.
+  - Log at INFO level on job start and completion; log at ERROR level with the job id on failure.
+  - "Do not call _claim_job, _complete_job, or _fail_job directly; they are internal lifecycle methods."
+  - Run one QueueListener per process; use separate processes or containers to scale workers horizontally.
+outputs:
+  agents: true
+  claude: true
+  copilot: true
+  cursor: true
