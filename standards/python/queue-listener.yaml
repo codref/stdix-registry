@@ -24,7 +24,7 @@ rules:
   - Include `msg.id`, topic, consumer name, command, and relevant domain identifiers in logs for every start, success, validation failure, and exception.
   - Catch validation and domain errors in the handler only when you can classify them, log them with context, and then ack or nack deliberately.
   - Let unexpected exceptions reach the handler failure path; never swallow exceptions in helper functions in a way that leaves a message neither acked nor nacked.
-  - Make handlers idempotent because pawn-queue is at-least-once: use stable job/session identifiers, upserts, status tables, or dedupe checks around side effects.
+  - "Make handlers idempotent because pawn-queue is at-least-once: use stable job/session identifiers, upserts, status tables, or dedupe checks around side effects."
   - Configure `visibility_timeout_seconds` longer than the slowest expected job and `lease_refresh_interval_seconds` short enough to refresh leases well before expiry.
   - Keep `max_messages_per_poll` and any local concurrency aligned with the resources the job consumes; CPU, GPU, database, and external API limits matter more than queue throughput.
   - Choose `concurrency.strategy` from configuration, default to `auto`, and only force provider-specific strategies such as `conditional_write` when the object store supports them.
